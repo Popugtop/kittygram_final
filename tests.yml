@@ -1,0 +1,4 @@
+repo_owner: your-github-username
+taski_domain: http://your-server-ip/taski
+kittygram_domain: http://your-server-ip
+dockerhub_username: your-dockerhub-username

@@ -1,26 +1,76 @@
-#  Как работать с репозиторием финального задания
+# Kittygram
 
-## Что нужно сделать
+Веб-приложение для публикации фотографий котиков. Пользователи могут регистрироваться, добавлять своих котов с фотографиями, указывать имя, год рождения и цвет.
 
-Настроить запуск проекта Kittygram в контейнерах и CI/CD с помощью GitHub Actions
+## Стек технологий
 
-## Как проверить работу с помощью автотестов
+- Python 3.9
+- Django 3.2
+- Django REST Framework
+- PostgreSQL 13
+- Nginx
+- Docker / Docker Compose
+- GitHub Actions
 
-В корне репозитория создайте файл tests.yml со следующим содержимым:
-```yaml
-repo_owner: ваш_логин_на_гитхабе
-kittygram_domain: полная ссылка (https://доменное_имя) на ваш проект Kittygram
-taski_domain: полная ссылка (https://доменное_имя) на ваш проект Taski
-dockerhub_username: ваш_логин_на_докерхабе
+## Развёртывание проекта
+
+### 1. Клонировать репозиторий
+
+```bash
+git clone https://github.com/your-username/kittygram_final.git
+cd kittygram_final
 ```
 
-Скопируйте содержимое файла `.github/workflows/main.yml` в файл `kittygram_workflow.yml` в корневой директории проекта.
+### 2. Создать файл .env
 
-Для локального запуска тестов создайте виртуальное окружение, установите в него зависимости из backend/requirements.txt и запустите в корневой директории проекта `pytest`.
+Скопируйте пример и заполните значения:
 
-## Чек-лист для проверки перед отправкой задания
+```bash
+cp .env.example .env
+```
 
-- Проект Taski доступен по доменному имени, указанному в `tests.yml`.
-- Проект Kittygram доступен по доменному имени, указанному в `tests.yml`.
-- Пуш в ветку main запускает тестирование и деплой Kittygram, а после успешного деплоя вам приходит сообщение в телеграм.
-- В корне проекта есть файл `kittygram_workflow.yml`.
+Содержимое `.env`:
+
+```
+SECRET_KEY=ваш-секретный-ключ-django
+DEBUG=False
+ALLOWED_HOSTS=localhost 127.0.0.1
+
+POSTGRES_DB=kittygram
+POSTGRES_USER=kittygram_user
+POSTGRES_PASSWORD=ваш-пароль
+DB_HOST=db
+DB_PORT=5432
+```
+
+### 3. Запустить контейнеры
+
+```bash
+docker compose up -d
+```
+
+Проект будет доступен по адресу: http://localhost:9000
+
+## Структура проекта
+
+```
+kittygram_final/
+├── backend/        # Django-бэкенд
+├── frontend/       # React-фронтенд
+├── nginx/          # Конфигурация gateway
+├── docker-compose.yml
+└── .env.example
+```
+
+## CI/CD
+
+При пуше в ветку `main` автоматически:
+1. Запускаются тесты (ruff + pytest)
+2. Собираются и загружаются образы на Docker Hub
+3. Приходит уведомление в Telegram
+
+Для работы CI/CD нужно добавить секреты в GitHub репозиторий:
+- `DOCKER_USERNAME` — логин на Docker Hub
+- `DOCKER_PASSWORD` — пароль на Docker Hub
+- `TELEGRAM_TO` — ID чата в Telegram
+- `TELEGRAM_TOKEN` — токен Telegram-бота

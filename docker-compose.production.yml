@@ -12,7 +12,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   backend:
-    build: ./backend/
+    image: your-dockerhub-username/kittygram_backend:latest
     env_file: .env
     volumes:
       - static:/app/static
@@ -24,13 +24,13 @@ services:
              python manage.py collectstatic --no-input &&
              gunicorn --bind 0.0.0.0:8000 kittygram_backend.wsgi"
   frontend:
+    image: your-dockerhub-username/kittygram_frontend:latest
     env_file: .env
-    build: ./frontend/
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
   gateway:
-    build: ./nginx/
+    image: your-dockerhub-username/kittygram_gateway:latest
     env_file: .env
     ports:
       - 9000:80
